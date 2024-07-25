@@ -2,6 +2,9 @@
 class User {
     private $conn;
     private $table_name = "usuarios";
+    private $table_especialista = "especialista";
+
+
 
     public $id;
     public $nombre;
@@ -9,6 +12,20 @@ class User {
     public $telefono;
     public $email;
     public $contrasena;
+
+
+    public $idUsuario;
+    public $fechaNacimiento;
+    public $documentoIdentidad;
+    public $especialidades;
+    public $indentificacion;
+    public $dni_frente;
+    public $dni_atras;
+    public $confirmacion;
+    public $antecedentes;
+    public $evidencias;
+
+
 
     public function __construct($db) {
         $this->conn = $db;
@@ -85,12 +102,43 @@ class User {
     }
 
     public function loginUser() {
-        $query = "SELECT id, email, nombre, apellido FROM " . $this->table_name . " WHERE email = :email AND contrasena = :contrasena";
+        $query = "SELECT id, especialista,email, nombre, apellido FROM " . $this->table_name . " WHERE email = :email AND contrasena = :contrasena";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':contrasena', $this->contrasena);
         $stmt->execute();
         return $stmt;
     }
+
+
+    
+    public function crearEspecialista() {
+        $query = "INSERT INTO " . $this->table_especialista . " (idEspecialista, especialidades, fotoIdentificacion, fotoDniFrente, fotoDniTrasera, confirmacionIdentidad, antecedentesNoPenales, evidenciasTrabajos) VALUES (:idEspecialista, :especialidades, :fotoIdentificacion, :fotoDniFrente, :fotoDniTrasera, :confirmacionIdentidad, :antecedentesNoPenales, :evidenciasTrabajos)";
+        $stmt = $this->conn->prepare($query);
+    
+        $stmt->bindParam(':idEspecialista', $this->idUsuario);
+        $stmt->bindParam(':especialidades', $this->especialidades);
+        $stmt->bindParam(':fotoIdentificacion', $this->indentificacion);
+        $stmt->bindParam(':fotoDniFrente', $this->dni_frente);
+        $stmt->bindParam(':fotoDniTrasera', $this->dni_atras);
+        $stmt->bindParam(':confirmacionIdentidad', $this->confirmacion);
+        $stmt->bindParam(':antecedentesNoPenales', $this->antecedentes);
+        $stmt->bindParam(':evidenciasTrabajos', $this->evidencias);
+    
+        if ($stmt->execute()) {
+            // Actualizar el campo especialista en la tabla usuarios
+            $updateQuery = "UPDATE usuarios SET especialista = 1 WHERE id = :id";
+            $updateStmt = $this->conn->prepare($updateQuery);
+            $updateStmt->bindParam(':id', $this->idUsuario);
+    
+            if ($updateStmt->execute()) {
+                return true;
+            }
+        }
+    
+        return false;
+    }
+    
+
 }
 ?>

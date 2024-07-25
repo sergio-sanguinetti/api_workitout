@@ -1,7 +1,7 @@
 <?php
 class Queja {
     private $conn;
-    private $table = 'quejas';
+    private $table = 'queja';
 
     public $idQueja;
     public $idCliente;
@@ -16,13 +16,13 @@ class Queja {
     } 
 
     public function createQueja() {
-        $query = "INSERT INTO " . $this->table . " (idCliente, idSolicitud, motivo, descripcion, imagen, fechaHoraRegistro) VALUES (:idCliente, :idSolicitud, :motivo, :descripcion, :imagen, NOW())";
+        $query = "INSERT INTO " . $this->table . " (idUsuario, idSolicitud, motivo, detalle, evidencia, fechaHoraRegistro) VALUES (:idUsuario, :idSolicitud, :motivo, :detalle, :evidencia, NOW())";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':idCliente', $this->idCliente);
+        $stmt->bindParam(':idUsuario', $this->idCliente);
         $stmt->bindParam(':idSolicitud', $this->idSolicitud);
         $stmt->bindParam(':motivo', $this->motivo);
-        $stmt->bindParam(':descripcion', $this->descripcion);
-        $stmt->bindParam(':imagen', $this->imagen);
+        $stmt->bindParam(':detalle', $this->descripcion);
+        $stmt->bindParam(':evidencia', $this->imagen);
         return $stmt->execute();
     }
 }
